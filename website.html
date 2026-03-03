@@ -1,0 +1,1741 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Nova Wardrobe - Fashion Store</title>
+
+  <style>
+    :root {
+      --bg: #ffffff;
+      --bg-elevated: #f6f6f8;
+      --text: #141414;
+      --muted: #777;
+      --primary: #111827;
+      --primary-soft: #e5e7eb;
+      --accent: #ec4899;
+      --accent-soft: rgba(236, 72, 153, 0.1);
+      --border: #e5e7eb;
+      --radius-lg: 16px;
+      --radius-md: 12px;
+      --radius-sm: 999px;
+      --shadow-soft: 0 18px 45px rgba(15, 23, 42, 0.12);
+      --transition-fast: 0.18s ease-out;
+    }
+    body.dark {
+      --bg: #020617;
+      --bg-elevated: #020617;
+      --text: #e5e7eb;
+      --muted: #9ca3af;
+      --primary: #e5e7eb;
+      --primary-soft: #111827;
+      --accent-soft: rgba(236, 72, 153, 0.15);
+      --border: #1f2937;
+      --shadow-soft: 0 18px 45px rgba(15, 23, 42, 0.75);
+    }
+    *,*::before,*::after{box-sizing:border-box;}
+    html,body{
+      margin:0;
+      padding:0;
+      font-family:system-ui,-apple-system,BlinkMacSystemFont,"SF Pro Text","Inter",sans-serif;
+      background:radial-gradient(circle at top left,#fdf2ff 0,#ffffff 45%,#f1f5f9 100%);
+      color:var(--text);
+    }
+    body.dark{
+      background:radial-gradient(circle at top left,#020617 0,#020617 45%,#020617 100%);
+    }
+    .page-wrapper{
+      min-height:100vh;
+      max-width:1180px;
+      margin:0 auto;
+      padding:20px 16px 64px;
+    }
+    .main-header{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:24px;
+      padding:14px 18px;
+      border-radius:var(--radius-lg);
+      background:rgba(255,255,255,0.86);
+      backdrop-filter:blur(16px);
+      box-shadow:var(--shadow-soft);
+      position:sticky;
+      top:12px;
+      z-index:40;
+    }
+    body.dark .main-header{background:rgba(15,23,42,0.92);}
+    .brand{display:flex;align-items:center;gap:12px;}
+    .brand-mark{
+      width:34px;height:34px;border-radius:11px;
+      background:conic-gradient(from 180deg,#f97316,#ec4899,#22c55e,#f97316);
+      display:flex;align-items:center;justify-content:center;
+      font-weight:700;color:#fff;
+      box-shadow:0 12px 30px rgba(220,38,38,0.45);
+    }
+    .brand-text{display:flex;flex-direction:column;}
+    .brand-name{font-weight:600;letter-spacing:.04em;text-transform:uppercase;font-size:13px;}
+    .brand-tagline{font-size:11px;color:var(--muted);}
+    .main-nav{flex:1;display:flex;align-items:center;justify-content:center;}
+    .nav-links{
+      display:flex;list-style:none;gap:14px;
+      padding:0;margin:0;font-size:13px;
+    }
+    .nav-links a{
+      text-decoration:none;color:var(--muted);
+      padding:6px 10px;border-radius:999px;
+      transition:background var(--transition-fast),color var(--transition-fast);
+    }
+    .nav-links a:hover{background:var(--primary-soft);color:var(--primary);}
+    .nav-links a.active{background:var(--primary);color:#f9fafb;}
+    .nav-toggle{
+      display:none;background:none;border:none;
+      font-size:22px;color:var(--text);
+    }
+    .header-actions{display:flex;align-items:center;gap:8px;}
+    .icon-btn{
+      width:32px;height:32px;border-radius:999px;
+      border:1px solid var(--border);background:#f9fafb;
+      display:inline-flex;align-items:center;justify-content:center;
+      cursor:pointer;font-size:15px;
+      transition:background var(--transition-fast),transform var(--transition-fast),border-color var(--transition-fast);
+    }
+    body.dark .icon-btn{background:#020617;}
+    .icon-btn:hover{
+      background:var(--accent-soft);border-color:var(--accent);transform:translateY(-1px);
+    }
+    main{margin-top:20px;}
+    .page-section{display:none;padding:22px 10px 16px;}
+    .page-section.visible{display:block;}
+    .section-heading{
+      display:flex;align-items:flex-end;justify-content:space-between;
+      gap:16px;margin-bottom:18px;
+    }
+    .section-heading h2{margin:0 0 4px;font-size:22px;}
+    .section-heading p{margin:0;color:var(--muted);font-size:13px;}
+    .section{margin-top:30px;}
+    .eyebrow{
+      font-size:11px;text-transform:uppercase;letter-spacing:.16em;
+      color:var(--accent);margin:0 0 6px;
+    }
+    .muted{color:var(--muted);}
+    .small{font-size:12px;}
+    .btn{
+      border-radius:var(--radius-sm);border:none;cursor:pointer;
+      padding:10px 18px;font-size:13px;font-weight:500;
+      display:inline-flex;align-items:center;justify-content:center;gap:6px;
+      transition:background var(--transition-fast),transform var(--transition-fast),box-shadow var(--transition-fast),color var(--transition-fast);
+    }
+    .btn.primary{
+      background:linear-gradient(135deg,#0f172a,#111827);
+      color:#f9fafb;
+      box-shadow:0 12px 30px rgba(15,23,42,0.56);
+    }
+    .btn.primary:hover{transform:translateY(-1px);box-shadow:0 18px 40px rgba(15,23,42,0.7);}
+    .btn.secondary{background:var(--accent-soft);color:var(--accent);}
+    .btn.secondary:hover{background:rgba(236,72,153,0.18);}
+    .btn.ghost{background:transparent;color:var(--primary);border:1px solid var(--border);}
+    body.dark .btn.ghost{color:var(--text);}
+    .btn.ghost:hover{background:var(--primary-soft);}
+    .btn.small{padding:7px 12px;font-size:12px;}
+    .btn.full-width{width:100%;}
+    .link-btn{
+      border:none;background:none;color:var(--primary);
+      font-size:13px;text-decoration:underline;cursor:pointer;padding:0;
+    }
+    .hero{
+      border-radius:24px;overflow:hidden;position:relative;
+      min-height:280px;background:#020617;margin-bottom:26px;
+    }
+    .hero-slider{position:relative;height:100%;}
+    .hero-slide{
+      position:absolute;inset:0;background-size:cover;background-position:center;
+      opacity:0;transform:scale(1.02);
+      transition:opacity .7s ease,transform .9s ease;
+    }
+    .hero-slide.active{opacity:1;transform:scale(1);}
+    .hero-slide::before{
+      content:"";position:absolute;inset:0;
+      background:radial-gradient(circle at left,rgba(15,23,42,0.92),transparent 55%);
+    }
+    .hero-content{
+      position:relative;z-index:1;max-width:420px;
+      padding:36px 34px;color:#f9fafb;
+    }
+    .hero-content h1{font-size:30px;margin:4px 0 10px;}
+    .hero-content p{margin:0 0 16px;font-size:14px;max-width:340px;}
+    .hero-actions{display:flex;gap:10px;flex-wrap:wrap;}
+    .hero-dots{
+      position:absolute;right:20px;bottom:18px;
+      display:flex;gap:6px;
+    }
+    .hero-dots button{
+      width:8px;height:8px;border-radius:999px;border:none;
+      background:rgba(148,163,184,0.7);
+      transform:scale(1);
+      transition:transform var(--transition-fast),background var(--transition-fast),width var(--transition-fast);
+    }
+    .hero-dots button.active{
+      width:18px;background:#e5e7eb;transform:scale(1.1);
+    }
+    .grid{display:grid;gap:14px;}
+    .collections-grid{grid-template-columns:repeat(auto-fit,minmax(180px,1fr));}
+    .collection-card{
+      padding:14px 14px 16px;border-radius:18px;
+      background:linear-gradient(135deg,rgba(15,23,42,0.96),#020617);
+      color:#e5e7eb;box-shadow:var(--shadow-soft);
+      cursor:pointer;border:1px solid rgba(148,163,184,0.4);
+      transition:transform var(--transition-fast),box-shadow var(--transition-fast),border-color var(--transition-fast);
+    }
+    .collection-card h3{margin:0 0 4px;font-size:16px;}
+    .collection-card p{margin:0 0 10px;font-size:13px;}
+    .collection-card:hover{
+      transform:translateY(-2px);
+      box-shadow:0 20px 40px rgba(15,23,42,0.9);
+      border-color:var(--accent);
+    }
+    .chip{
+      display:inline-flex;align-items:center;
+      padding:3px 9px;border-radius:999px;
+      background:rgba(15,23,42,0.9);
+      border:1px solid rgba(148,163,184,0.75);
+      font-size:11px;
+    }
+    .product-grid{grid-template-columns:repeat(auto-fit,minmax(180px,1fr));}
+    .product-grid.compact{grid-template-columns:repeat(auto-fit,minmax(150px,1fr));}
+    .product-card{
+      padding:10px;border-radius:16px;
+      background:rgba(255,255,255,0.9);
+      backdrop-filter:blur(10px);
+      box-shadow:0 12px 26px rgba(15,23,42,0.08);
+      border:1px solid rgba(148,163,184,0.2);
+      display:flex;flex-direction:column;gap:6px;
+    }
+    body.dark .product-card{background:rgba(15,23,42,0.92);border-color:#1f2937;}
+    .product-media{
+      border-radius:12px;overflow:hidden;position:relative;
+      aspect-ratio:3/4;background:#020617;
+    }
+    .product-media img{width:100%;height:100%;object-fit:cover;display:block;}
+    .badge-row{
+      position:absolute;top:8px;left:8px;display:flex;gap:6px;
+    }
+    .badge{
+      padding:3px 7px;border-radius:999px;font-size:10px;
+      text-transform:uppercase;letter-spacing:.1em;
+      background:rgba(15,23,42,0.86);color:#e5e7eb;
+    }
+    .badge.accent{background:rgba(236,72,153,0.95);}
+    .product-body h3{margin:4px 0 2px;font-size:14px;}
+    .product-meta{
+      display:flex;justify-content:space-between;align-items:center;
+      font-size:12px;color:var(--muted);
+    }
+    .price{font-weight:600;}
+    .product-actions{display:flex;gap:6px;margin-top:4px;}
+    .product-actions .btn{flex:1;}
+    .product-actions .icon-btn{width:32px;height:32px;}
+    .layout-grid{
+      display:grid;gap:20px;
+      grid-template-columns:260px minmax(0,1.4fr);
+    }
+    .cart-layout{grid-template-columns:minmax(0,1.6fr) 260px;}
+    .filters{
+      padding:14px 14px 16px;border-radius:18px;
+      background:rgba(255,255,255,0.95);
+      border:1px solid var(--border);
+      box-shadow:0 12px 26px rgba(15,23,42,0.08);
+      font-size:13px;
+    }
+    body.dark .filters{background:rgba(15,23,42,0.96);}
+    .filters h3{margin:0 0 10px;font-size:15px;}
+    .filter-group{margin-bottom:10px;}
+    .filter-group h4{
+      margin:0 0 4px;font-size:12px;
+      text-transform:uppercase;letter-spacing:.08em;
+      color:var(--muted);
+    }
+    .filter-group label{display:block;font-size:12px;margin-bottom:2px;}
+    .shop-main{padding:4px 2px;}
+    .shop-toolbar{
+      display:flex;justify-content:space-between;align-items:center;
+      gap:12px;margin-bottom:10px;font-size:13px;
+    }
+    select,input,textarea{font-family:inherit;font-size:13px;}
+    select,input:not([type="checkbox"]):not([type="radio"]),textarea{
+      padding:8px 10px;border-radius:999px;border:1px solid var(--border);
+      background:rgba(255,255,255,0.96);color:var(--text);width:100%;
+    }
+    body.dark select,
+    body.dark input:not([type="checkbox"]):not([type="radio"]),
+    body.dark textarea{
+      background:#020617;border-color:#1f2937;
+    }
+    textarea{border-radius:16px;resize:vertical;}
+    .product-detail-layout{
+      display:grid;
+      grid-template-columns:minmax(0,1.15fr) minmax(0,1.2fr);
+      gap:30px;align-items:flex-start;
+    }
+    .product-gallery{
+      background:rgba(15,23,42,0.98);
+      border-radius:26px;padding:12px 12px 14px;
+      box-shadow:var(--shadow-soft);
+    }
+    .product-gallery img{width:100%;border-radius:20px;display:block;}
+    .thumb-row{display:flex;gap:8px;margin-top:8px;}
+    .thumb-row img{
+      width:56px;height:56px;border-radius:12px;
+      cursor:pointer;opacity:.7;border:1px solid transparent;
+    }
+    .thumb-row img.active{opacity:1;border-color:var(--accent);}
+    .product-info h2{margin:0 0 4px;}
+    .selectors{display:flex;gap:10px;margin:10px 0;}
+    .selectors div{flex:1;}
+    .selectors label{display:block;font-size:12px;margin-bottom:3px;}
+    .stock-status{font-size:13px;margin:8px 0;}
+    .stock-status.low{color:#f97316;}
+    .pd-actions{display:flex;gap:10px;margin-top:10px;}
+    .pd-recommended{margin-top:18px;}
+    .pd-reviews{margin-top:18px;font-size:13px;}
+    #wishlistGrid:empty::before{
+      content:"Your wishlist is empty. Tap the heart on any product to save it here.";
+      display:block;font-size:13px;color:var(--muted);
+    }
+    #cartItems:empty::before{
+      content:"Your cart is empty. Add a few outfits from the shop.";
+      display:block;font-size:13px;color:var(--muted);
+    }
+    .cart-item{
+      display:flex;gap:10px;padding:8px 0;
+      border-bottom:1px solid var(--border);font-size:13px;
+    }
+    .cart-item img{
+      width:70px;height:88px;object-fit:cover;border-radius:12px;
+    }
+    .cart-item-main{flex:1;}
+    .cart-item-header{display:flex;justify-content:space-between;gap:10px;}
+    .cart-qty{display:flex;align-items:center;gap:4px;margin-top:4px;}
+    .cart-qty button{
+      width:24px;height:24px;border-radius:999px;
+      border:1px solid var(--border);background:transparent;cursor:pointer;
+    }
+    .cart-summary{
+      padding:14px 14px 16px;border-radius:18px;
+      background:rgba(255,255,255,0.96);
+      border:1px solid var(--border);
+      font-size:13px;
+      box-shadow:0 10px 24px rgba(15,23,42,0.08);
+    }
+    body.dark .cart-summary{background:rgba(15,23,42,0.96);}
+    .summary-row{
+      display:flex;justify-content:space-between;margin-bottom:4px;
+    }
+    .summary-row.total{font-weight:600;margin-top:6px;}
+    .coupon-row{display:flex;gap:6px;margin:10px 0 6px;}
+    .coupon-row input{flex:1;}
+    .checkout-form{
+      padding:14px 14px 16px;border-radius:18px;
+      background:rgba(255,255,255,0.96);
+      border:1px solid var(--border);
+      box-shadow:0 10px 24px rgba(15,23,42,0.08);
+      font-size:13px;
+    }
+    body.dark .checkout-form{background:rgba(15,23,42,0.96);}
+    .checkout-form h3{margin:0 0 8px;}
+    .form-row{display:flex;gap:8px;}
+    .form-row input{flex:1;}
+    .payment-options{
+      display:flex;gap:16px;margin-bottom:8px;font-size:13px;
+    }
+    .order-summary{
+      padding:14px 14px 16px;border-radius:18px;
+      background:rgba(255,255,255,0.96);
+      border:1px solid var(--border);
+      font-size:13px;
+      box-shadow:0 10px 24px rgba(15,23,42,0.08);
+    }
+    body.dark .order-summary{background:rgba(15,23,42,0.96);}
+    .account-layout{grid-template-columns:repeat(auto-fit,minmax(260px,1fr));}
+    .auth-form{
+      padding:10px 0 6px;
+      display:flex;flex-direction:column;gap:8px;
+    }
+    .social-logins{
+      margin-top:6px;display:flex;flex-direction:column;gap:6px;
+    }
+    .account-list{
+      margin:8px 0 0;padding-left:18px;font-size:13px;
+    }
+    .flash-sale{
+      padding:14px 14px 16px;border-radius:18px;
+      background:linear-gradient(135deg,#0f172a,#020617);
+      color:#e5e7eb;
+      display:flex;justify-content:space-between;align-items:center;gap:14px;
+    }
+    .flash-sale h3{margin:0 0 4px;}
+    .timer{
+      font-family:"SF Mono",Menlo,ui-monospace,SFMono-Regular,Consolas,"Liberation Mono","Courier New",monospace;
+      padding:8px 14px;border-radius:999px;
+      background:rgba(15,23,42,0.86);
+      border:1px solid rgba(148,163,184,0.7);
+    }
+    .lookbook-grid{
+      display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;
+    }
+    .lookbook-item{
+      border-radius:18px;background-size:cover;
+      background-position:center;min-height:140px;
+    }
+    .lookbook-item.tall{grid-row:span 2;min-height:230px;}
+    .lookbook-item.wide{grid-column:span 2;min-height:160px;}
+    .instagram{margin-top:20px;}
+    .insta-grid{grid-template-columns:repeat(auto-fit,minmax(110px,1fr));}
+    .insta-placeholder{
+      border-radius:999px;padding:12px 14px;
+      border:1px dashed var(--border);
+      font-size:12px;text-align:center;
+    }
+    .blog-grid{grid-template-columns:repeat(auto-fit,minmax(230px,1fr));}
+    .blog-card{
+      padding:12px 12px 14px;border-radius:18px;
+      background:rgba(255,255,255,0.96);
+      border:1px solid var(--border);
+      box-shadow:0 10px 24px rgba(15,23,42,0.08);
+      font-size:13px;
+    }
+    body.dark .blog-card{background:rgba(15,23,42,0.96);}
+    .blog-card h3{margin:0 0 4px;font-size:15px;}
+    .blog-card p{margin:0 0 6px;}
+    .track-form{display:flex;gap:6px;margin-bottom:10px;}
+    .track-result{font-size:13px;color:var(--muted);}
+    .admin-layout{grid-template-columns:repeat(auto-fit,minmax(260px,1fr));}
+    .admin-form{display:flex;flex-direction:column;gap:8px;margin-top:6px;}
+    .admin-list{
+      margin:8px 0 0;
+      padding-left:18px;font-size:13px;
+    }
+    .contact-layout{grid-template-columns:repeat(auto-fit,minmax(260px,1fr));}
+    .contact-form{display:flex;flex-direction:column;gap:8px;}
+    .about-grid{
+      display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));
+      gap:12px;font-size:13px;
+    }
+    .newsletter-inner{
+      padding:14px 16px;border-radius:18px;
+      background:linear-gradient(135deg,rgba(248,250,252,0.9),rgba(254,242,242,0.9));
+      display:flex;justify-content:space-between;align-items:center;gap:12px;
+      font-size:13px;
+    }
+    body.dark .newsletter-inner{background:linear-gradient(135deg,#020617,#020617);}
+    .newsletter-form{display:flex;gap:6px;}
+    .sale-banner{
+      padding:16px;border-radius:18px;
+      background:linear-gradient(135deg,#0f172a,#581c87);
+      color:#e5e7eb;
+      display:flex;justify-content:space-between;align-items:center;gap:12px;
+    }
+    .sale-banner h2{margin:0 0 4px;font-size:18px;}
+    .sale-banner p{margin:0;font-size:13px;}
+    .main-footer{
+      margin-top:40px;padding-top:18px;
+      border-top:1px solid var(--border);
+      font-size:12px;color:var(--muted);
+    }
+    .footer-top{
+      display:grid;
+      grid-template-columns:minmax(0,1.2fr) repeat(2,minmax(0,0.7fr));
+      gap:18px;margin-bottom:12px;
+    }
+    .footer-top h3,.footer-top h4{margin:0 0 4px;}
+    .footer-top ul{list-style:none;padding:0;margin:0;}
+    .footer-top a{color:var(--muted);text-decoration:none;font-size:12px;}
+    .footer-top a:hover{text-decoration:underline;}
+    .footer-bottom{
+      border-top:1px dashed var(--border);
+      padding-top:8px;text-align:center;
+    }
+    .popup{
+      position:fixed;inset:0;
+      display:flex;align-items:center;justify-content:center;
+      background:rgba(15,23,42,0.56);z-index:50;
+    }
+    .popup.hidden{display:none;}
+    .popup-inner{
+      max-width:340px;width:90%;background:#f9fafb;
+      padding:18px 18px 16px;border-radius:18px;
+      box-shadow:0 20px 40px rgba(15,23,42,0.8);
+      position:relative;text-align:center;
+    }
+    body.dark .popup-inner{background:#020617;}
+    .popup-inner h3{margin:0 0 6px;}
+    .popup-inner p{margin:0 0 12px;font-size:13px;}
+    .popup-close{
+      position:absolute;right:10px;top:8px;
+      border:none;background:none;cursor:pointer;
+      font-size:14px;color:var(--muted);
+    }
+    .chat-widget{
+      position:fixed;bottom:16px;right:14px;
+      z-index:45;font-size:13px;
+    }
+    .chat-toggle{
+      border-radius:999px;border:none;padding:9px 16px;
+      background:#0f172a;color:#e5e7eb;cursor:pointer;
+      box-shadow:0 14px 30px rgba(15,23,42,0.76);
+    }
+    .chat-window{
+      position:absolute;right:0;bottom:45px;width:280px;
+      background:rgba(15,23,42,0.98);color:#e5e7eb;
+      border-radius:18px;overflow:hidden;
+      box-shadow:0 20px 50px rgba(15,23,42,0.95);
+    }
+    .chat-header{
+      padding:10px 12px;
+      border-bottom:1px solid rgba(148,163,184,0.4);
+    }
+    .chat-header h4{margin:0;font-size:13px;}
+    .chat-messages{
+      max-height:220px;overflow-y:auto;
+      padding:10px 10px 6px;
+    }
+    .chat-message{margin-bottom:6px;font-size:12px;}
+    .chat-message.user{text-align:right;}
+    .chat-message.assistant{text-align:left;color:#e5e7eb;}
+    .chat-input-row{
+      padding:6px 8px 8px;display:flex;gap:6px;
+    }
+    .chat-input-row input{
+      flex:1;border-radius:999px;
+      border:1px solid rgba(148,163,184,0.7);
+      background:rgba(15,23,42,0.9);color:#e5e7eb;
+    }
+    @media (max-width:900px){
+      .layout-grid{grid-template-columns:minmax(0,1fr);}
+      .cart-layout{grid-template-columns:minmax(0,1fr);}
+      .product-detail-layout{grid-template-columns:minmax(0,1fr);}
+      .footer-top{grid-template-columns:repeat(2,minmax(0,1fr));}
+    }
+    @media (max-width:768px){
+      .main-header{gap:10px;}
+      .nav-toggle{display:block;}
+      .nav-links{
+        position:absolute;top:52px;left:16px;right:16px;
+        padding:10px 12px;border-radius:16px;
+        background:rgba(255,255,255,0.97);
+        box-shadow:0 18px 45px rgba(15,23,42,0.2);
+        transform-origin:top;transform:scaleY(0.8);
+        opacity:0;pointer-events:none;
+        flex-direction:column;gap:6px;
+      }
+      body.dark .nav-links{background:rgba(15,23,42,0.98);}
+      .nav-links.open{
+        opacity:1;transform:scaleY(1);pointer-events:auto;
+      }
+      .hero-content{padding:24px 22px;}
+      .hero-content h1{font-size:24px;}
+      .hero-content p{max-width:none;}
+      .hero-dots{right:12px;}
+      .newsletter-inner{flex-direction:column;align-items:flex-start;}
+      .newsletter-form{width:100%;flex-direction:column;}
+      .flash-sale{flex-direction:column;align-items:flex-start;}
+      .sale-banner{flex-direction:column;align-items:flex-start;}
+    }
+    @media (max-width:600px){
+      .page-wrapper{padding-inline:12px;}
+      .section-heading{flex-direction:column;align-items:flex-start;}
+      .lookbook-grid{grid-template-columns:repeat(2,minmax(0,1fr));}
+      .footer-top{grid-template-columns:minmax(0,1fr);}
+    }
+  </style>
+</head>
+<body>
+<div class="page-wrapper">
+  <header class="main-header">
+    <div class="brand">
+      <div class="brand-mark">N</div>
+      <div class="brand-text">
+        <span class="brand-name">Nova Wardrobe</span>
+        <span class="brand-tagline">Bold. Minimal. Timeless.</span>
+      </div>
+    </div>
+    <nav class="main-nav">
+      <button class="nav-toggle" aria-label="Toggle navigation">&#9776;</button>
+      <ul class="nav-links">
+        <li><a href="#home" data-section="home" class="nav-link active">Home</a></li>
+        <li><a href="#shop" data-section="shop" class="nav-link">Shop</a></li>
+        <li><a href="#lookbook" data-section="lookbook" class="nav-link">Lookbook</a></li>
+        <li><a href="#blog" data-section="blog" class="nav-link">Blog</a></li>
+        <li><a href="#offers" data-section="offers" class="nav-link">Offers</a></li>
+        <li><a href="#account" data-section="account" class="nav-link">Account</a></li>
+        <li><a href="#contact" data-section="contact" class="nav-link">Contact</a></li>
+      </ul>
+    </nav>
+    <div class="header-actions">
+      <button id="darkModeToggle" class="icon-btn" aria-label="Toggle dark mode">🌙</button>
+      <button id="wishlistBtn" class="icon-btn" data-section="wishlist" aria-label="Wishlist">❤</button>
+      <button id="cartBtn" class="icon-btn" data-section="cart" aria-label="Cart">🛒</button>
+    </div>
+  </header>
+
+  <main>
+    <!-- HOME -->
+    <section id="home" class="page-section visible">
+      <div class="hero">
+        <div class="hero-slider">
+          <div class="hero-slide active" style="background-image:url('https://images.pexels.com/photos/7671166/pexels-photo-7671166.jpeg?auto=compress&cs=tinysrgb&w=1200');">
+            <div class="hero-content">
+              <p class="hero-kicker eyebrow">New Drop</p>
+              <h1>Bold. Minimal. Timeless.</h1>
+              <p>Statement pieces that move with you from desk to dinner.</p>
+              <div class="hero-actions">
+                <button class="btn primary" data-section="shop">Shop Now</button>
+                <button class="btn ghost" data-section="lookbook">View Lookbook</button>
+              </div>
+            </div>
+          </div>
+          <div class="hero-slide" style="background-image:url('https://images.pexels.com/photos/7671157/pexels-photo-7671157.jpeg?auto=compress&cs=tinysrgb&w=1200');">
+            <div class="hero-content">
+              <p class="hero-kicker eyebrow">Summer Edit</p>
+              <h1>Effortless layers, infinite looks.</h1>
+              <p>Curated outfits for weekdays, weekends and everything in between.</p>
+              <div class="hero-actions">
+                <button class="btn primary" data-section="shop">Explore Collection</button>
+                <button class="btn ghost" data-section="blog">Read Styling Tips</button>
+              </div>
+            </div>
+          </div>
+          <div class="hero-slide" style="background-image:url('https://images.pexels.com/photos/7671163/pexels-photo-7671163.jpeg?auto=compress&cs=tinysrgb&w=1200');">
+            <div class="hero-content">
+              <p class="hero-kicker eyebrow">Power Dressing</p>
+              <h1>Sharp tailoring. Soft silhouettes.</h1>
+              <p>Office-ready blazers and trousers with a modern twist.</p>
+              <div class="hero-actions">
+                <button class="btn primary" data-section="shop">Shop Blazers</button>
+                <button class="btn ghost" data-section="offers">View Offers</button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="hero-dots"></div>
+      </div>
+
+      <section class="section featured">
+        <div class="section-heading">
+          <h2>Featured Collections</h2>
+          <p>Handpicked edits for every mood and moment.</p>
+        </div>
+        <div class="grid collections-grid">
+          <article class="collection-card" data-section="shop" data-filter="blazers">
+            <h3>Power Blazers</h3>
+            <p>Structured silhouettes for work and beyond.</p>
+            <span class="chip">Office</span>
+          </article>
+          <article class="collection-card" data-section="shop" data-filter="dresses">
+            <h3>After-Hours Dresses</h3>
+            <p>From cocktails to midnight runs.</p>
+            <span class="chip">Party</span>
+          </article>
+          <article class="collection-card" data-section="shop" data-filter="denim">
+            <h3>Everyday Denim</h3>
+            <p>Soft, sculpting and made to move.</p>
+            <span class="chip">Casual</span>
+          </article>
+        </div>
+      </section>
+
+      <section class="section trending">
+        <div class="section-heading">
+          <h2>Trending Now</h2>
+          <p>Live-updating looks that shoppers love.</p>
+        </div>
+        <div id="trendingGrid" class="grid product-grid"></div>
+      </section>
+
+      <section class="section arrivals">
+        <div class="section-heading">
+          <div>
+            <h2>New Arrivals</h2>
+            <p>Freshly dropped pieces, updated automatically.</p>
+          </div>
+          <button class="link-btn" data-section="new-arrivals">View all</button>
+        </div>
+        <div id="newArrivalsPreview" class="grid product-grid compact"></div>
+      </section>
+
+      <section class="section sale-highlight">
+        <div class="sale-banner">
+          <div>
+            <p class="eyebrow">Limited Time</p>
+            <h2>Mid-Season Sale – Up to 40% Off</h2>
+            <p>Members get early access & exclusive colorways.</p>
+          </div>
+          <button class="btn secondary" data-section="offers">Shop Sale</button>
+        </div>
+      </section>
+
+      <section class="section newsletter">
+        <div class="newsletter-inner">
+          <div>
+            <h2>Stay in the Style Loop</h2>
+            <p>Get new drops, styling tips and private-sale invites in your inbox.</p>
+          </div>
+          <form id="newsletterForm" class="newsletter-form">
+            <input type="email" id="newsletterEmail" placeholder="Enter your email" required>
+            <button type="submit" class="btn primary">Join Newsletter</button>
+          </form>
+        </div>
+      </section>
+    </section>
+
+    <!-- SHOP -->
+    <section id="shop" class="page-section">
+      <header class="section-heading">
+        <h2>Shop Collection</h2>
+        <p>Filter by mood, occasion, size or color.</p>
+      </header>
+      <div class="layout-grid">
+        <aside class="filters">
+          <h3>Filters</h3>
+          <div class="filter-group">
+            <h4>Category</h4>
+            <label><input type="checkbox" value="dresses" class="filter-category"> Dresses</label>
+            <label><input type="checkbox" value="tops" class="filter-category"> Tops</label>
+            <label><input type="checkbox" value="denim" class="filter-category"> Denim</label>
+            <label><input type="checkbox" value="blazers" class="filter-category"> Blazers</label>
+          </div>
+          <div class="filter-group">
+            <h4>Size</h4>
+            <label><input type="checkbox" value="XS" class="filter-size"> XS</label>
+            <label><input type="checkbox" value="S" class="filter-size"> S</label>
+            <label><input type="checkbox" value="M" class="filter-size"> M</label>
+            <label><input type="checkbox" value="L" class="filter-size"> L</label>
+          </div>
+          <div class="filter-group">
+            <h4>Color</h4>
+            <label><input type="checkbox" value="black" class="filter-color"> Black</label>
+            <label><input type="checkbox" value="white" class="filter-color"> White</label>
+            <label><input type="checkbox" value="beige" class="filter-color"> Beige</label>
+            <label><input type="checkbox" value="blue" class="filter-color"> Blue</label>
+          </div>
+          <div class="filter-group">
+            <h4>Occasion</h4>
+            <label><input type="checkbox" value="party" class="filter-occasion"> Party</label>
+            <label><input type="checkbox" value="casual" class="filter-occasion"> Casual</label>
+            <label><input type="checkbox" value="office" class="filter-occasion"> Office</label>
+          </div>
+          <div class="filter-group">
+            <h4>Tags</h4>
+            <label><input type="checkbox" value="trending" class="filter-tag"> Trending</label>
+            <label><input type="checkbox" value="new" class="filter-tag"> New</label>
+            <label><input type="checkbox" value="bestseller" class="filter-tag"> Best Seller</label>
+          </div>
+        </aside>
+        <section class="shop-main">
+          <div class="shop-toolbar">
+            <div>
+              <label for="sortSelect">Sort by:</label>
+              <select id="sortSelect">
+                <option value="popularity">Popularity</option>
+                <option value="low-high">Price: Low to High</option>
+                <option value="high-low">Price: High to Low</option>
+              </select>
+            </div>
+            <button id="aiSuggestBtn" class="btn ghost small">AI Outfit Suggestions</button>
+          </div>
+          <div id="shopGrid" class="grid product-grid"></div>
+        </section>
+      </div>
+    </section>
+
+    <!-- PRODUCT DETAIL -->
+    <section id="product-detail" class="page-section">
+      <div class="product-detail-layout">
+        <div class="product-gallery">
+          <img id="pdMainImage" src="" alt="Product image">
+          <div id="pdThumbnails" class="thumb-row"></div>
+        </div>
+        <div class="product-info">
+          <p class="eyebrow" id="pdCategory"></p>
+          <h2 id="pdName"></h2>
+          <p class="price" id="pdPrice"></p>
+          <div class="selectors">
+            <div>
+              <label for="pdSize">Size</label>
+              <select id="pdSize"></select>
+            </div>
+            <div>
+              <label for="pdColor">Color</label>
+              <select id="pdColor"></select>
+            </div>
+          </div>
+          <p id="pdFabric" class="muted"></p>
+          <p id="pdStock" class="stock-status"></p>
+          <div class="pd-actions">
+            <button id="pdAddToCart" class="btn primary">Add to Cart</button>
+            <button id="pdAddToWishlist" class="btn secondary">❤ Wishlist</button>
+          </div>
+          <section class="pd-recommended">
+            <h3>Recommended Outfits</h3>
+            <div id="pdRecommended" class="grid product-grid compact"></div>
+          </section>
+          <section class="pd-reviews">
+            <h3>Reviews ⭐</h3>
+            <div id="pdReviews"></div>
+          </section>
+        </div>
+      </div>
+    </section>
+
+    <!-- WISHLIST -->
+    <section id="wishlist" class="page-section">
+      <header class="section-heading">
+        <h2>Wishlist</h2>
+        <p>Save outfits you love and move them to your bag later.</p>
+      </header>
+      <div id="wishlistGrid" class="grid product-grid"></div>
+    </section>
+
+    <!-- CART -->
+    <section id="cart" class="page-section">
+      <header class="section-heading">
+        <h2>Your Cart</h2>
+        <p>Review items before you checkout.</p>
+      </header>
+      <div class="layout-grid cart-layout">
+        <section>
+          <div id="cartItems"></div>
+        </section>
+        <aside class="cart-summary">
+          <h3>Summary</h3>
+          <div class="summary-row">
+            <span>Subtotal</span><span id="cartSubtotal">₹0</span>
+          </div>
+          <div class="summary-row">
+            <span>Discount</span><span id="cartDiscount">- ₹0</span>
+          </div>
+          <div class="summary-row">
+            <span>Delivery</span><span id="cartDelivery">₹0</span>
+          </div>
+          <div class="summary-row total">
+            <span>Total</span><span id="cartTotal">₹0</span>
+          </div>
+          <div class="coupon-row">
+            <input id="couponInput" placeholder="Coupon code (e.g. WELCOME10)">
+            <button id="applyCouponBtn" class="btn ghost small">Apply</button>
+          </div>
+          <button id="goToCheckoutBtn" class="btn primary" data-section="checkout">Proceed to Checkout</button>
+          <p id="cartEta" class="muted small"></p>
+        </aside>
+      </div>
+    </section>
+
+    <!-- CHECKOUT -->
+    <section id="checkout" class="page-section">
+      <header class="section-heading">
+        <h2>Checkout</h2>
+        <p>Secure payment and fast delivery.</p>
+      </header>
+      <div class="layout-grid">
+        <form id="checkoutForm" class="checkout-form">
+          <h3>Shipping Address</h3>
+          <div class="form-row">
+            <input name="fullName" placeholder="Full name" required>
+            <input name="phone" placeholder="Phone" required>
+          </div>
+          <input name="address1" placeholder="Address line 1" required>
+          <input name="address2" placeholder="Address line 2">
+          <div class="form-row">
+            <input name="city" placeholder="City" required>
+            <input name="pincode" placeholder="Pincode" required>
+          </div>
+          <h3>Payment</h3>
+          <div class="payment-options">
+            <label><input type="radio" name="payment" value="upi" checked> UPI</label>
+            <label><input type="radio" name="payment" value="card"> Card</label>
+            <label><input type="radio" name="payment" value="cod"> Cash on Delivery</label>
+          </div>
+          <div id="paymentDetails"></div>
+          <button type="submit" class="btn primary full-width">Pay & Place Order</button>
+        </form>
+        <aside class="order-summary">
+          <h3>Order Summary</h3>
+          <div id="checkoutItems"></div>
+          <div class="summary-row">
+            <span>Items total</span><span id="coSubtotal">₹0</span>
+          </div>
+          <div class="summary-row">
+            <span>Delivery</span><span id="coDelivery">₹0</span>
+          </div>
+          <div class="summary-row total">
+            <span>Payable</span><span id="coTotal">₹0</span>
+          </div>
+          <p id="coDeliveryMsg" class="muted small"></p>
+        </aside>
+      </div>
+    </section>
+
+    <!-- ACCOUNT -->
+    <section id="account" class="page-section">
+      <header class="section-heading">
+        <h2>My Account</h2>
+        <p>Login to manage your orders, wishlist and addresses.</p>
+      </header>
+      <div class="layout-grid account-layout">
+        <section>
+          <h3>Login / Signup</h3>
+          <form id="authForm" class="auth-form">
+            <input type="email" placeholder="Email" required>
+            <input type="password" placeholder="Password" required>
+            <button class="btn primary full-width">Login</button>
+          </form>
+          <div class="social-logins">
+            <p class="muted small">Or continue with</p>
+            <button class="btn ghost small">Continue with Google</button>
+            <button class="btn ghost small">Continue with Facebook</button>
+          </div>
+        </section>
+        <section>
+          <h3>Dashboard</h3>
+          <ul class="account-list">
+            <li>Profile details (coming soon)</li>
+            <li>Order history</li>
+            <li>Saved addresses</li>
+            <li>Wishlist</li>
+            <li>Track orders</li>
+          </ul>
+        </section>
+      </div>
+    </section>
+
+    <!-- NEW ARRIVALS PAGE -->
+    <section id="new-arrivals" class="page-section">
+      <header class="section-heading">
+        <h2>New Arrivals</h2>
+        <p>Fresh pieces, just added by admin.</p>
+      </header>
+      <div id="newArrivalsGrid" class="grid product-grid"></div>
+    </section>
+
+    <!-- OFFERS -->
+    <section id="offers" class="page-section">
+      <header class="section-heading">
+        <h2>Offers & Sale</h2>
+        <p>Dynamic discounts and flash sales.</p>
+      </header>
+      <div class="flash-sale">
+        <div>
+          <h3>Flash Sale – Extra 15% Off</h3>
+          <p>Use code <strong>FLASH15</strong> before the timer hits zero.</p>
+        </div>
+        <div class="timer" id="flashTimer">00:30:00</div>
+      </div>
+      <div id="offersGrid" class="grid product-grid compact"></div>
+    </section>
+
+    <!-- LOOKBOOK -->
+    <section id="lookbook" class="page-section">
+      <header class="section-heading">
+        <h2>Lookbook</h2>
+        <p>See how our community styles Nova Wardrobe.</p>
+      </header>
+      <div class="lookbook-grid">
+        <div class="lookbook-item tall" style="background-image:url('https://images.pexels.com/photos/7671160/pexels-photo-7671160.jpeg?auto=compress&cs=tinysrgb&w=1200');"></div>
+        <div class="lookbook-item" style="background-image:url('https://images.pexels.com/photos/7671153/pexels-photo-7671153.jpeg?auto=compress&cs=tinysrgb&w=1200');"></div>
+        <div class="lookbook-item wide" style="background-image:url('https://images.pexels.com/photos/7671164/pexels-photo-7671164.jpeg?auto=compress&cs=tinysrgb&w=1200');"></div>
+        <div class="lookbook-item" style="background-image:url('https://images.pexels.com/photos/7671145/pexels-photo-7671145.jpeg?auto=compress&cs=tinysrgb&w=1200');"></div>
+      </div>
+      <section class="section instagram">
+        <h3>Instagram Feed</h3>
+        <p class="muted small">Embed your real Instagram feed here. Currently showing placeholders.</p>
+        <div class="grid insta-grid">
+          <div class="insta-placeholder">@novawardrobe</div>
+          <div class="insta-placeholder">@novawardrobe</div>
+          <div class="insta-placeholder">@novawardrobe</div>
+        </div>
+      </section>
+    </section>
+
+    <!-- BLOG -->
+    <section id="blog" class="page-section">
+      <header class="section-heading">
+        <h2>Blog & Fashion Tips</h2>
+        <p>Stay ahead of the trends and learn how to style your wardrobe.</p>
+      </header>
+      <div class="grid blog-grid">
+        <article class="blog-card">
+          <h3>5 Ways to Style Your Everyday Denim</h3>
+          <p>From office casual to weekend coffee runs, see how to re-wear your denim on repeat.</p>
+          <button class="link-btn">Read more</button>
+        </article>
+        <article class="blog-card">
+          <h3>Building a Timeless Capsule Wardrobe</h3>
+          <p>Key pieces that work across seasons and trends, so you always feel put together.</p>
+          <button class="link-btn">Read more</button>
+        </article>
+        <article class="blog-card">
+          <h3>Desk to Dinner Outfit Formulas</h3>
+          <p>Look polished for meetings and ready for dinner plans in under 5 minutes.</p>
+          <button class="link-btn">Read more</button>
+        </article>
+      </div>
+    </section>
+
+    <!-- TRACK ORDER -->
+    <section id="track-order" class="page-section">
+      <header class="section-heading">
+        <h2>Track Your Order</h2>
+        <p>Enter your order ID to see real-time status.</p>
+      </header>
+      <form id="trackForm" class="track-form">
+        <input id="trackInput" placeholder="Order ID (e.g. NW-1023)" required>
+        <button class="btn primary">Track Order</button>
+      </form>
+      <div id="trackResult" class="track-result"></div>
+    </section>
+
+    <!-- ADMIN -->
+    <section id="admin" class="page-section">
+      <header class="section-heading">
+        <h2>Admin Panel</h2>
+        <p>Front-end only preview of how you will manage products and orders.</p>
+      </header>
+      <div class="layout-grid admin-layout">
+        <section>
+          <h3>Add / Edit Product</h3>
+          <form id="adminProductForm" class="admin-form">
+            <input name="name" placeholder="Product name" required>
+            <input name="price" type="number" placeholder="Price" required>
+            <input name="category" placeholder="Category (dress, blazer, etc.)" required>
+            <input name="image" placeholder="Image URL">
+            <button class="btn secondary small">Preview Add (local only)</button>
+          </form>
+          <p class="muted small">Hook this form to your backend later to save products to the database.</p>
+        </section>
+        <section>
+          <h3>Manage Orders & Users</h3>
+          <ul class="admin-list">
+            <li>View open orders</li>
+            <li>Change order status</li>
+            <li>Apply manual discounts</li>
+            <li>View registered users</li>
+          </ul>
+        </section>
+      </div>
+    </section>
+
+    <!-- CONTACT -->
+    <section id="contact" class="page-section">
+      <header class="section-heading">
+        <h2>Contact Us</h2>
+        <p>We are one message away for fit, sizing or order queries.</p>
+      </header>
+      <div class="layout-grid contact-layout">
+        <form id="contactForm" class="contact-form">
+          <input name="name" placeholder="Your name" required>
+          <input name="email" type="email" placeholder="Your email" required>
+          <textarea name="message" rows="4" placeholder="How can we help?" required></textarea>
+          <button class="btn primary">Send Message</button>
+        </form>
+        <section class="contact-info">
+          <h3>Reach us directly</h3>
+          <p>Email: hello@novawardrobe.com</p>
+          <p>Location: Bengaluru, India</p>
+          <p>WhatsApp: +91-90000-00000</p>
+        </section>
+      </div>
+    </section>
+
+    <!-- ABOUT -->
+    <section id="about" class="page-section">
+      <header class="section-heading">
+        <h2>About Nova Wardrobe</h2>
+        <p>Our vision, story and what makes us different.</p>
+      </header>
+      <div class="about-grid">
+        <section>
+          <h3>Our Vision</h3>
+          <p>To make getting dressed the easiest and most joyful part of your day, with pieces that feel as good as they look.</p>
+        </section>
+        <section>
+          <h3>Style Identity</h3>
+          <p>We live where sharp tailoring meets soft minimalism – pieces that work hard in your wardrobe and never go out of style.</p>
+        </section>
+        <section>
+          <h3>Founder Story</h3>
+          <p>Founded by a stylist-turned-designer who wanted to simplify overflowing wardrobes into a few perfect outfits.</p>
+        </section>
+      </div>
+    </section>
+  </main>
+
+  <footer class="main-footer">
+    <div class="footer-top">
+      <div>
+        <h3>Nova Wardrobe</h3>
+        <p>Bold. Minimal. Timeless.</p>
+      </div>
+      <div>
+        <h4>Explore</h4>
+        <ul>
+          <li><a href="#shop" data-section="shop">Shop</a></li>
+          <li><a href="#lookbook" data-section="lookbook">Lookbook</a></li>
+          <li><a href="#blog" data-section="blog">Blog</a></li>
+          <li><a href="#offers" data-section="offers">Offers</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Help</h4>
+        <ul>
+          <li><a href="#track-order" data-section="track-order">Track Order</a></li>
+          <li><a href="#contact" data-section="contact">Contact</a></li>
+          <li><a href="#about" data-section="about">About</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>© <span id="year"></span> Nova Wardrobe. All rights reserved.</p>
+    </div>
+  </footer>
+
+  <div id="offerPopup" class="popup hidden" role="dialog" aria-modal="true">
+    <div class="popup-inner">
+      <button class="popup-close" aria-label="Close">✕</button>
+      <h3>Extra 10% Off Your First Order</h3>
+      <p>Use code <strong>WELCOME10</strong> at checkout.</p>
+      <button class="btn primary" data-section="shop">Shop Now</button>
+    </div>
+  </div>
+
+  <div id="chatWidget" class="chat-widget">
+    <button id="chatToggle" class="chat-toggle">Live chat</button>
+    <div class="chat-window hidden">
+      <div class="chat-header">
+        <h4>Style Assistant</h4>
+      </div>
+      <div id="chatMessages" class="chat-messages"></div>
+      <form id="chatForm" class="chat-input-row">
+        <input id="chatInput" placeholder="Ask about fit, size, styling...">
+        <button class="btn primary small">Send</button>
+      </form>
+    </div>
+  </div>
+</div>
+
+<script>
+  const products = [
+    {
+      id: "nw-blazer-01",
+      name: "Nova Power Blazer",
+      category: "blazers",
+      price: 3499,
+      sizes: ["XS", "S", "M", "L"],
+      colors: ["black", "beige"],
+      occasion: ["office", "party"],
+      tags: ["trending", "bestseller"],
+      fabric: "Recycled poly blend, fully lined",
+      stock: 8,
+      images: [
+        "https://images.pexels.com/photos/7671163/pexels-photo-7671163.jpeg?auto=compress&cs=tinysrgb&w=800",
+        "https://images.pexels.com/photos/7671244/pexels-photo-7671244.jpeg?auto=compress&cs=tinysrgb&w=800"
+      ],
+      rating: 4.7
+    },
+    {
+      id: "nw-dress-01",
+      name: "Midnight Slip Dress",
+      category: "dresses",
+      price: 2899,
+      sizes: ["XS", "S", "M"],
+      colors: ["black"],
+      occasion: ["party"],
+      tags: ["trending", "new"],
+      fabric: "Satin-touch viscose",
+      stock: 5,
+      images: [
+        "https://images.pexels.com/photos/7671166/pexels-photo-7671166.jpeg?auto=compress&cs=tinysrgb&w=800"
+      ],
+      rating: 4.6
+    },
+    {
+      id: "nw-denim-01",
+      name: "Soft Sculpt Denim",
+      category: "denim",
+      price: 2199,
+      sizes: ["S", "M", "L"],
+      colors: ["blue"],
+      occasion: ["casual", "office"],
+      tags: ["bestseller"],
+      fabric: "Cotton with comfort stretch",
+      stock: 12,
+      images: [
+        "https://images.pexels.com/photos/7671160/pexels-photo-7671160.jpeg?auto=compress&cs=tinysrgb&w=800"
+      ],
+      rating: 4.8
+    },
+    {
+      id: "nw-top-01",
+      name: "Everyday Ribbed Top",
+      category: "tops",
+      price: 1299,
+      sizes: ["XS", "S", "M", "L"],
+      colors: ["white", "black"],
+      occasion: ["casual"],
+      tags: ["new"],
+      fabric: "Organic cotton rib",
+      stock: 15,
+      images: [
+        "https://images.pexels.com/photos/7671153/pexels-photo-7671153.jpeg?auto=compress&cs=tinysrgb&w=800"
+      ],
+      rating: 4.4
+    }
+  ];
+
+  const storage = {
+    get(key, fallback) {
+      try {
+        const v = localStorage.getItem(key);
+        return v ? JSON.parse(v) : fallback;
+      } catch { return fallback; }
+    },
+    set(key, value) {
+      try { localStorage.setItem(key, JSON.stringify(value)); } catch {}
+    }
+  };
+
+  let cart = storage.get("nw_cart", []);
+  let wishlist = storage.get("nw_wishlist", []);
+  let recentlyViewed = storage.get("nw_recently", []);
+
+  const qs = s => document.querySelector(s);
+  const qsa = s => Array.from(document.querySelectorAll(s));
+  const formatPrice = v => `₹${v.toLocaleString("en-IN")}`;
+
+  function showSection(id) {
+    qsa(".page-section").forEach(s => s.classList.toggle("visible", s.id === id));
+    qsa(".nav-link").forEach(link =>
+      link.classList.toggle("active", link.dataset.section === id)
+    );
+    if (window.innerWidth < 768) qs(".nav-links")?.classList.remove("open");
+  }
+
+  function initHeroSlider() {
+    const slides = qsa(".hero-slide");
+    const dotsContainer = qs(".hero-dots");
+    if (!slides.length || !dotsContainer) return;
+    let current = 0;
+    slides.forEach((_, i) => {
+      const dot = document.createElement("button");
+      if (i === 0) dot.classList.add("active");
+      dot.addEventListener("click", () => { current = i; apply(); });
+      dotsContainer.appendChild(dot);
+    });
+    const dots = qsa(".hero-dots button");
+    function apply() {
+      slides.forEach((s, i) => s.classList.toggle("active", i === current));
+      dots.forEach((d, i) => d.classList.toggle("active", i === current));
+    }
+    setInterval(() => { current = (current + 1) % slides.length; apply(); }, 5500);
+  }
+
+  function makeProductCard(p) {
+    const wrapper = document.createElement("article");
+    wrapper.className = "product-card";
+    wrapper.innerHTML = `
+      <div class="product-media">
+        <img src="${p.images[0]}" alt="${p.name}">
+        <div class="badge-row">
+          ${p.tags.includes("new") ? '<span class="badge accent">New</span>' : ""}
+          ${p.tags.includes("bestseller") ? '<span class="badge">Best</span>' : ""}
+        </div>
+      </div>
+      <div class="product-body">
+        <h3>${p.name}</h3>
+        <div class="product-meta">
+          <span>${formatPrice(p.price)}</span>
+          <span>⭐ ${p.rating}</span>
+        </div>
+        <div class="product-meta">
+          <span>${p.category}</span>
+          <span>${p.occasion.join(", ")}</span>
+        </div>
+        <div class="product-actions">
+          <button class="btn ghost small" data-quick-view="${p.id}">Quick view</button>
+          <button class="icon-btn" data-wishlist-toggle="${p.id}">❤</button>
+        </div>
+      </div>
+    `;
+    return wrapper;
+  }
+
+  function renderTrending() {
+    const c = qs("#trendingGrid");
+    if (!c) return;
+    c.innerHTML = "";
+    products.filter(p => p.tags.includes("trending"))
+      .forEach(p => c.appendChild(makeProductCard(p)));
+  }
+
+  function renderNewArrivalsPreview() {
+    const c = qs("#newArrivalsPreview");
+    const arrivals = products.filter(p => p.tags.includes("new"));
+    c.innerHTML = "";
+    arrivals.forEach(p => c.appendChild(makeProductCard(p)));
+  }
+
+  function renderNewArrivalsPage() {
+    const c = qs("#newArrivalsGrid");
+    c.innerHTML = "";
+    products.filter(p => p.tags.includes("new"))
+      .forEach(p => c.appendChild(makeProductCard(p)));
+  }
+
+  function renderOffers() {
+    const c = qs("#offersGrid");
+    c.innerHTML = "";
+    products.forEach(p => c.appendChild(makeProductCard(p)));
+  }
+
+  function getFilterValues() {
+    const getVals = cls => qsa(`.${cls}:checked`).map(i => i.value);
+    return {
+      categories: getVals("filter-category"),
+      sizes: getVals("filter-size"),
+      colors: getVals("filter-color"),
+      occasions: getVals("filter-occasion"),
+      tags: getVals("filter-tag")
+    };
+  }
+
+  function applyFilters(list) {
+    const f = getFilterValues();
+    return list.filter(p => {
+      if (f.categories.length && !f.categories.includes(p.category)) return false;
+      if (f.sizes.length && !p.sizes.some(s => f.sizes.includes(s))) return false;
+      if (f.colors.length && !p.colors.some(c => f.colors.includes(c))) return false;
+      if (f.occasions.length && !p.occasion.some(o => f.occasions.includes(o))) return false;
+      if (f.tags.length && !p.tags.some(t => f.tags.includes(t))) return false;
+      return true;
+    });
+  }
+
+  function applySort(list) {
+    const v = qs("#sortSelect")?.value || "popularity";
+    const arr = [...list];
+    if (v === "low-high") arr.sort((a, b) => a.price - b.price);
+    else if (v === "high-low") arr.sort((a, b) => b.price - a.price);
+    else arr.sort((a, b) => b.rating - a.rating);
+    return arr;
+  }
+
+  function renderShop() {
+    const c = qs("#shopGrid");
+    if (!c) return;
+    c.innerHTML = "";
+    const filtered = applyFilters(products);
+    const sorted = applySort(filtered);
+    if (!sorted.length) {
+      c.innerHTML = `<p class="muted small">No products match these filters yet.</p>`;
+      return;
+    }
+    sorted.forEach(p => c.appendChild(makeProductCard(p)));
+  }
+
+  let currentProduct = null;
+
+  function openProductDetail(id) {
+    const p = products.find(x => x.id === id);
+    if (!p) return;
+    currentProduct = p;
+    showSection("product-detail");
+    qs("#pdName").textContent = p.name;
+    qs("#pdCategory").textContent = p.category.toUpperCase();
+    qs("#pdPrice").textContent = formatPrice(p.price);
+    qs("#pdFabric").textContent = p.fabric;
+    const stockEl = qs("#pdStock");
+    stockEl.textContent = p.stock > 0 ? `In stock – ${p.stock} left` : "Out of stock";
+    stockEl.classList.toggle("low", p.stock > 0 && p.stock <= 5);
+
+    const sizeSel = qs("#pdSize");
+    const colorSel = qs("#pdColor");
+    sizeSel.innerHTML = p.sizes.map(s => `<option value="${s}">${s}</option>`).join("");
+    colorSel.innerHTML = p.colors.map(c => `<option value="${c}">${c}</option>`).join("");
+
+    const main = qs("#pdMainImage");
+    const thumbs = qs("#pdThumbnails");
+    main.src = p.images[0];
+    thumbs.innerHTML = "";
+    p.images.forEach((url, idx) => {
+      const img = document.createElement("img");
+      img.src = url;
+      if (idx === 0) img.classList.add("active");
+      img.addEventListener("click", () => {
+        main.src = url;
+        qsa("#pdThumbnails img").forEach(t => t.classList.remove("active"));
+        img.classList.add("active");
+      });
+      thumbs.appendChild(img);
+    });
+
+    const rec = qs("#pdRecommended");
+    rec.innerHTML = "";
+    products.filter(x => x.id !== p.id).slice(0, 3)
+      .forEach(rp => rec.appendChild(makeProductCard(rp)));
+
+    qs("#pdReviews").innerHTML = `
+      <p>⭐️⭐️⭐️⭐️⭐️ – "Perfect tailored fit and fabric" – Aisha</p>
+      <p>⭐️⭐️⭐️⭐️ – "Great for work and dinners" – Riya</p>
+    `;
+
+    recentlyViewed = [p.id, ...recentlyViewed.filter(id2 => id2 !== p.id)].slice(0, 8);
+    storage.set("nw_recently", recentlyViewed);
+  }
+
+  function toggleWishlist(id) {
+    if (wishlist.includes(id)) wishlist = wishlist.filter(x => x !== id);
+    else wishlist = [id, ...wishlist];
+    storage.set("nw_wishlist", wishlist);
+    renderWishlist();
+  }
+
+  function renderWishlist() {
+    const c = qs("#wishlistGrid");
+    if (!c) return;
+    c.innerHTML = "";
+    const items = products.filter(p => wishlist.includes(p.id));
+    items.forEach(p => c.appendChild(makeProductCard(p)));
+  }
+
+  function addToCart(id, size, color) {
+    const key = `${id}-${size}-${color}`;
+    const item = cart.find(c => c.key === key);
+    if (item) item.qty += 1;
+    else cart.push({ key, id, size, color, qty: 1 });
+    storage.set("nw_cart", cart);
+    renderCart();
+  }
+
+  function updateCartQty(key, delta) {
+    const item = cart.find(c => c.key === key);
+    if (!item) return;
+    item.qty += delta;
+    if (item.qty <= 0) cart = cart.filter(c => c.key !== key);
+    storage.set("nw_cart", cart);
+    renderCart();
+  }
+
+  function removeFromCart(key) {
+    cart = cart.filter(c => c.key !== key);
+    storage.set("nw_cart", cart);
+    renderCart();
+  }
+
+  function computeCartTotals() {
+    let subtotal = 0;
+    cart.forEach(item => {
+      const p = products.find(x => x.id === item.id);
+      if (p) subtotal += p.price * item.qty;
+    });
+    return { subtotal };
+  }
+
+  function renderCart() {
+    const itemsEl = qs("#cartItems");
+    if (!itemsEl) return;
+    itemsEl.innerHTML = "";
+    cart.forEach(item => {
+      const p = products.find(x => x.id === item.id);
+      if (!p) return;
+      const row = document.createElement("div");
+      row.className = "cart-item";
+      row.innerHTML = `
+        <img src="${p.images[0]}" alt="${p.name}">
+        <div class="cart-item-main">
+          <div class="cart-item-header">
+            <div>
+              <strong>${p.name}</strong>
+              <div class="muted small">${item.size} • ${item.color}</div>
+            </div>
+            <div>${formatPrice(p.price * item.qty)}</div>
+          </div>
+          <div class="cart-qty">
+            <button data-cart-dec="${item.key}">-</button>
+            <span>${item.qty}</span>
+            <button data-cart-inc="${item.key}">+</button>
+            <button class="link-btn" data-cart-remove="${item.key}">Remove</button>
+          </div>
+        </div>
+      `;
+      itemsEl.appendChild(row);
+    });
+
+    const { subtotal } = computeCartTotals();
+    let discount = 0;
+    const coupon = (qs("#couponInput")?.value || "").trim().toUpperCase();
+    if (coupon === "WELCOME10") discount = Math.round(subtotal * 0.1);
+    if (coupon === "FLASH15") discount = Math.round(subtotal * 0.15);
+
+    const delivery = subtotal > 2999 ? 0 : subtotal ? 99 : 0;
+    const total = subtotal - discount + delivery;
+
+    qs("#cartSubtotal").textContent = formatPrice(subtotal);
+    qs("#cartDiscount").textContent = `- ${formatPrice(discount)}`;
+    qs("#cartDelivery").textContent = formatPrice(delivery);
+    qs("#cartTotal").textContent = formatPrice(total);
+
+    const eta = qs("#cartEta");
+    if (eta) {
+      eta.textContent = subtotal
+        ? subtotal > 4999
+          ? "Free express delivery in 1–2 days."
+          : "Estimated delivery in 3–5 working days."
+        : "";
+    }
+    renderCheckoutSummary();
+  }
+
+  function renderCheckoutSummary() {
+    const itemsEl = qs("#checkoutItems");
+    if (!itemsEl) return;
+    itemsEl.innerHTML = "";
+    cart.forEach(item => {
+      const p = products.find(x => x.id === item.id);
+      if (!p) return;
+      const div = document.createElement("div");
+      div.className = "summary-row";
+      div.innerHTML = `<span>${item.qty} × ${p.name}</span><span>${formatPrice(p.price * item.qty)}</span>`;
+      itemsEl.appendChild(div);
+    });
+    const { subtotal } = computeCartTotals();
+    const delivery = subtotal > 2999 ? 0 : subtotal ? 99 : 0;
+    const total = subtotal + delivery;
+    qs("#coSubtotal").textContent = formatPrice(subtotal);
+    qs("#coDelivery").textContent = formatPrice(delivery);
+    qs("#coTotal").textContent = formatPrice(total);
+    qs("#coDeliveryMsg").textContent =
+      subtotal > 2999 ? "You unlocked free premium delivery ✨" : "Free delivery over ₹2,999.";
+  }
+
+  function aiSuggest() {
+    const occasion = prompt("Tell us the occasion (party, casual, office) to get a suggestion:");
+    if (!occasion) return;
+    const oc = occasion.toLowerCase();
+    const match = products.find(p => p.occasion.includes(oc));
+    if (!match) {
+      alert("We don't have a perfect match yet. Try party, casual or office.");
+      return;
+    }
+    alert(`For ${oc}, we recommend: ${match.name} (${formatPrice(match.price)})`);
+  }
+
+  function initTracking() {
+    const form = qs("#trackForm");
+    if (!form) return;
+    form.addEventListener("submit", e => {
+      e.preventDefault();
+      const id = qs("#trackInput").value.trim();
+      const out = qs("#trackResult");
+      if (!id) return;
+      out.textContent = `Order ${id} is packed and will be shipped today. Tracking link will be sent on SMS.`;
+    });
+  }
+
+  function initFlashTimer() {
+    const el = qs("#flashTimer");
+    if (!el) return;
+    let remaining = 30 * 60;
+    function tick() {
+      const h = String(Math.floor(remaining / 3600)).padStart(2, "0");
+      const m = String(Math.floor((remaining % 3600) / 60)).padStart(2, "0");
+      const s = String(remaining % 60).padStart(2, "0");
+      el.textContent = `${h}:${m}:${s}`;
+      if (remaining > 0) remaining -= 1;
+    }
+    tick();
+    setInterval(tick, 1000);
+  }
+
+  function initPopup() {
+    const popup = qs("#offerPopup");
+    if (!popup) return;
+    const close = popup.querySelector(".popup-close");
+    const hide = () => popup.classList.add("hidden");
+    close.addEventListener("click", hide);
+    popup.addEventListener("click", e => { if (e.target === popup) hide(); });
+    setTimeout(() => popup.classList.remove("hidden"), 5000);
+  }
+
+  function initChat() {
+    const toggle = qs("#chatToggle");
+    const win = qs(".chat-window");
+    const form = qs("#chatForm");
+    const input = qs("#chatInput");
+    const messages = qs("#chatMessages");
+    if (!toggle || !win || !form || !input || !messages) return;
+
+    toggle.addEventListener("click", () => win.classList.toggle("hidden"));
+
+    function addMessage(text, who) {
+      const div = document.createElement("div");
+      div.className = `chat-message ${who}`;
+      div.textContent = text;
+      messages.appendChild(div);
+      messages.scrollTop = messages.scrollHeight;
+    }
+
+    form.addEventListener("submit", e => {
+      e.preventDefault();
+      const text = input.value.trim();
+      if (!text) return;
+      addMessage(text, "user");
+      input.value = "";
+      setTimeout(() => {
+        addMessage("We will get back to you shortly with styling help 💬", "assistant");
+      }, 600);
+    });
+  }
+
+  function initForms() {
+    const nForm = qs("#newsletterForm");
+    nForm?.addEventListener("submit", e => {
+      e.preventDefault();
+      alert("Thank you for subscribing to our newsletter!");
+      nForm.reset();
+    });
+
+    const cForm = qs("#contactForm");
+    cForm?.addEventListener("submit", e => {
+      e.preventDefault();
+      alert("Message sent! We will reply to your email soon.");
+      cForm.reset();
+    });
+
+    const adminForm = qs("#adminProductForm");
+    adminForm?.addEventListener("submit", e => {
+      e.preventDefault();
+      alert("This is a front-end preview only. Connect this form to your backend to save products.");
+    });
+
+    const checkoutForm = qs("#checkoutForm");
+    checkoutForm?.addEventListener("submit", e => {
+      e.preventDefault();
+      if (!cart.length) { alert("Your cart is empty."); return; }
+      alert("Order placed successfully! (Mock checkout – connect to payment gateway later.)");
+      cart = [];
+      storage.set("nw_cart", cart);
+      renderCart();
+      showSection("track-order");
+    });
+  }
+
+  function initPaymentDetails() {
+    const container = qs("#paymentDetails");
+    if (!container) return;
+    const radios = qsa('input[name="payment"]');
+    const render = () => {
+      const val = radios.find(r => r.checked)?.value;
+      if (val === "upi") {
+        container.innerHTML = `<input placeholder="Enter UPI ID (e.g. name@upi)" required>`;
+      } else if (val === "card") {
+        container.innerHTML = `
+          <input placeholder="Card number" required>
+          <div class="form-row">
+            <input placeholder="MM/YY" required>
+            <input placeholder="CVV" required>
+          </div>
+        `;
+      } else {
+        container.innerHTML = `<p class="muted small">Pay with cash when the parcel is delivered.</p>`;
+      }
+    };
+    radios.forEach(r => r.addEventListener("change", render));
+    render();
+  }
+
+  function initDarkMode() {
+    const toggle = qs("#darkModeToggle");
+    const stored = storage.get("nw_theme", "light");
+    if (stored === "dark") document.body.classList.add("dark");
+    toggle?.addEventListener("click", () => {
+      document.body.classList.toggle("dark");
+      storage.set("nw_theme", document.body.classList.contains("dark") ? "dark" : "light");
+    });
+  }
+
+  function initNav() {
+    const links = qsa("[data-section]");
+    links.forEach(el => {
+      el.addEventListener("click", e => {
+        const section = el.dataset.section;
+        if (!section) return;
+        e.preventDefault();
+        showSection(section);
+      });
+    });
+    const navToggle = qs(".nav-toggle");
+    const navLinks = qs(".nav-links");
+    navToggle?.addEventListener("click", () => navLinks?.classList.toggle("open"));
+  }
+
+  function initDelegatedEvents() {
+    document.addEventListener("click", e => {
+      const quick = e.target.closest("[data-quick-view]");
+      if (quick) { openProductDetail(quick.dataset.quickView); return; }
+      const wish = e.target.closest("[data-wishlist-toggle]");
+      if (wish) { toggleWishlist(wish.dataset.wishlistToggle); return; }
+      const addCart = e.target.closest("[data-add-cart]");
+      if (addCart) {
+        const id = addCart.dataset.addCart;
+        const p = products.find(x => x.id === id);
+        if (!p) return;
+        addToCart(id, p.sizes[0], p.colors[0]);
+        return;
+      }
+      const dec = e.target.closest("[data-cart-dec]");
+      if (dec) { updateCartQty(dec.dataset.cartDec, -1); return; }
+      const inc = e.target.closest("[data-cart-inc]");
+      if (inc) { updateCartQty(inc.dataset.cartInc, 1); return; }
+      const rem = e.target.closest("[data-cart-remove]");
+      if (rem) { removeFromCart(rem.dataset.cartRemove); return; }
+    });
+  }
+
+  function initCartActions() {
+    qs("#applyCouponBtn")?.addEventListener("click", renderCart);
+    qs("#goToCheckoutBtn")?.addEventListener("click", () => showSection("checkout"));
+  }
+
+  function initAISuggestBtn() {
+    qs("#aiSuggestBtn")?.addEventListener("click", aiSuggest);
+  }
+
+  function initYear() {
+    const y = qs("#year");
+    if (y) y.textContent = new Date().getFullYear();
+  }
+
+  document.addEventListener("DOMContentLoaded", () => {
+    initNav();
+    initHeroSlider();
+    initDarkMode();
+    initDelegatedEvents();
+    initCartActions();
+    initAISuggestBtn();
+    initTracking();
+    initFlashTimer();
+    initPopup();
+    initChat();
+    initForms();
+    initPaymentDetails();
+    initYear();
+    renderTrending();
+    renderNewArrivalsPreview();
+    renderNewArrivalsPage();
+    renderOffers();
+    renderShop();
+    renderWishlist();
+    renderCart();
+  });
+</script>
+</body>
+</html>
